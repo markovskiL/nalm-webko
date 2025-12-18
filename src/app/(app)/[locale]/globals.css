@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* Include @webko-labs/ui classes */
+@source "../../../../node_modules/@webko-labs/ui/dist";
+
+/* Modular styles */
+@import "./styles/theme.css";
+@import "./styles/brand.css";
+@import "./styles/tailwind-theme.css";
+@import "./styles/base.css";
+@import "./styles/animations.css";
+@import "./styles/sections.css";

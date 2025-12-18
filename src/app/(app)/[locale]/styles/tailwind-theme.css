@@ -1,0 +1,90 @@
+/* Tailwind v4 theme configuration */
+
+@theme inline {
+  /* Fonts */
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  --font-heading: ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+
+  /* Typography Scale - Mobile First */
+  --text-heading-1: clamp(2.5rem, 5vw, 4rem);
+  --text-heading-2: clamp(2rem, 4vw, 3rem);
+  --text-heading-3: clamp(1.5rem, 3vw, 2rem);
+  --text-heading-4: clamp(1.25rem, 2vw, 1.5rem);
+  --text-heading-5: clamp(1.125rem, 1.5vw, 1.25rem);
+  --text-heading-6: 1rem;
+  --text-body: 1rem;
+  --text-body-lg: 1.125rem;
+  --text-body-sm: 0.875rem;
+
+  /* Line Heights */
+  --leading-heading: 1.1;
+  --leading-body: 1.6;
+  --leading-relaxed: 1.75;
+
+  /* Font Weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Letter Spacing */
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+
+  /* Text Colors - Semantic */
+  --color-text-primary: var(--color-secondary);
+  --color-text-secondary: var(--color-slate);
+  --color-text-muted: #64748b;
+  --color-text-accent: var(--color-primary);
+  --color-text-inverse: #ffffff;
+
+  /* Brand colors - CMS-driven via --theme-* variables from layout */
+  --color-primary: var(--theme-primary, var(--primary));
+  --color-primary-dark: color-mix(in srgb, var(--theme-primary, var(--primary)) 85%, black);
+  --color-secondary: var(--theme-secondary, var(--secondary));
+  --color-accent: var(--theme-accent, var(--accent));
+  --color-light: #f0f9ff;
+
+  /* shadcn color mappings */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Radius */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Sidebar */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Chart */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+}
