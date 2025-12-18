@@ -27,14 +27,14 @@ importers:
         specifier: ^4.1.18
         version: 4.1.18
       '@webko-labs/i18n':
-        specifier: file:/Users/leonardomarkovski/Desktop/webko/packages/i18n
-        version: file:../webko/packages/i18n(next-intl@4.6.1(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(react@19.2.1)(typescript@5.7.3))
+        specifier: latest
+        version: 0.1.4(next-intl@4.6.1(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(react@19.2.1)(typescript@5.7.3))
       '@webko-labs/payload-config':
-        specifier: file:/Users/leonardomarkovski/Desktop/webko/packages/payload-config
-        version: file:../webko/packages/payload-config(@faceless-ui/modal@3.0.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@faceless-ui/scroll-info@2.0.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@payloadcms/next@3.68.2(@types/react@19.2.1)(graphql@16.12.0)(monaco-editor@0.55.1)(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.68.2(bufferutil@4.1.0)(graphql@16.12.0)(typescript@5.7.3)(utf-8-validate@6.0.6))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3))(@types/pg@8.10.2)(@types/react@19.2.1)(monaco-editor@0.55.1)(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.68.2(bufferutil@4.1.0)(graphql@16.12.0)(typescript@5.7.3)(utf-8-validate@6.0.6))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3)(yjs@13.6.28)
+        specifier: latest
+        version: 0.2.0(@faceless-ui/modal@3.0.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@faceless-ui/scroll-info@2.0.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@payloadcms/next@3.68.2(@types/react@19.2.1)(graphql@16.12.0)(monaco-editor@0.55.1)(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.68.2(bufferutil@4.1.0)(graphql@16.12.0)(typescript@5.7.3)(utf-8-validate@6.0.6))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3))(@types/pg@8.10.2)(@types/react@19.2.1)(monaco-editor@0.55.1)(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.68.2(bufferutil@4.1.0)(graphql@16.12.0)(typescript@5.7.3)(utf-8-validate@6.0.6))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3)(yjs@13.6.28)
       '@webko-labs/ui':
-        specifier: file:/Users/leonardomarkovski/Desktop/webko/packages/ui
-        version: file:../webko/packages/ui(665452d2add89cb32e7bf91f302a630d)
+        specifier: latest
+        version: 0.2.0(665452d2add89cb32e7bf91f302a630d)
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -2511,21 +2511,21 @@ packages:
   '@vitest/utils@3.2.3':
     resolution: {integrity: sha512-4zFBCU5Pf+4Z6v+rwnZ1HU1yzOKKvDkMXZrymE2PBlbjKJRlrOxbvpfPSvJTGRIwGoahaOGvp+kbCoxifhzJ1Q==}
 
-  '@webko-labs/i18n@file:../webko/packages/i18n':
-    resolution: {directory: ../webko/packages/i18n, type: directory}
+  '@webko-labs/i18n@0.1.4':
+    resolution: {integrity: sha512-/DjdGz9fEgdcVCvWr6x11zpcim6y4oHpI5nJRF1LvufQH1mgMnOGhE0R0rkBrKq9FhjTvMLZDPjHe7sv2Mtrfw==, tarball: https://npm.pkg.github.com/download/@webko-labs/i18n/0.1.4/e7bb2098d86a3d0bcf312435c672b39387515913}
     peerDependencies:
       next-intl: ^3.0.0 || ^4.0.0
 
-  '@webko-labs/payload-config@file:../webko/packages/payload-config':
-    resolution: {directory: ../webko/packages/payload-config, type: directory}
+  '@webko-labs/payload-config@0.2.0':
+    resolution: {integrity: sha512-JE9txN09yX+S6upbIkpBqtfVSsNNHm6g/y8rBEeCr9fbYtYQ3AbUqwgaXE5tzs2fm3QSMK7qXnNl92KOb+qYtw==, tarball: https://npm.pkg.github.com/download/@webko-labs/payload-config/0.2.0/4b3c468e07f2b3ad17698e2541c293a2de65e3c6}
     peerDependencies:
       '@payloadcms/next': 3.68.2
       next: 15.5.7
       payload: 3.68.2
       react: ^18 || ^19
 
-  '@webko-labs/ui@file:../webko/packages/ui':
-    resolution: {directory: ../webko/packages/ui, type: directory}
+  '@webko-labs/ui@0.2.0':
+    resolution: {integrity: sha512-lHq5XGJKRFssj2JQQtSk0MVDJMJFTL3UM13iJszZL25S+KnAq3Y8aquFeNHeLpjrxZ+cOOjyTnbycDGNxnNxiw==, tarball: https://npm.pkg.github.com/download/@webko-labs/ui/0.2.0/15795bb56181a93b17e78e3cbfa0ca1dbd69e1fb}
     peerDependencies:
       '@hookform/resolvers': ^3.0.0
       '@payloadcms/richtext-lexical': 3.68.2
@@ -2536,19 +2536,6 @@ packages:
       react-dom: ^18 || ^19
       react-hook-form: ^7.0.0
       zod: ^3.0.0
-    peerDependenciesMeta:
-      '@hookform/resolvers':
-        optional: true
-      '@payloadcms/richtext-lexical':
-        optional: true
-      embla-carousel-autoplay:
-        optional: true
-      next-intl:
-        optional: true
-      react-hook-form:
-        optional: true
-      zod:
-        optional: true
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -7600,11 +7587,11 @@ snapshots:
       loupe: 3.2.1
       tinyrainbow: 2.0.0
 
-  '@webko-labs/i18n@file:../webko/packages/i18n(next-intl@4.6.1(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(react@19.2.1)(typescript@5.7.3))':
+  '@webko-labs/i18n@0.1.4(next-intl@4.6.1(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(react@19.2.1)(typescript@5.7.3))':
     dependencies:
       next-intl: 4.6.1(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(react@19.2.1)(typescript@5.7.3)
 
-  '@webko-labs/payload-config@file:../webko/packages/payload-config(@faceless-ui/modal@3.0.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@faceless-ui/scroll-info@2.0.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@payloadcms/next@3.68.2(@types/react@19.2.1)(graphql@16.12.0)(monaco-editor@0.55.1)(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.68.2(bufferutil@4.1.0)(graphql@16.12.0)(typescript@5.7.3)(utf-8-validate@6.0.6))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3))(@types/pg@8.10.2)(@types/react@19.2.1)(monaco-editor@0.55.1)(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.68.2(bufferutil@4.1.0)(graphql@16.12.0)(typescript@5.7.3)(utf-8-validate@6.0.6))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3)(yjs@13.6.28)':
+  '@webko-labs/payload-config@0.2.0(@faceless-ui/modal@3.0.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@faceless-ui/scroll-info@2.0.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@payloadcms/next@3.68.2(@types/react@19.2.1)(graphql@16.12.0)(monaco-editor@0.55.1)(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.68.2(bufferutil@4.1.0)(graphql@16.12.0)(typescript@5.7.3)(utf-8-validate@6.0.6))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3))(@types/pg@8.10.2)(@types/react@19.2.1)(monaco-editor@0.55.1)(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.68.2(bufferutil@4.1.0)(graphql@16.12.0)(typescript@5.7.3)(utf-8-validate@6.0.6))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3)(yjs@13.6.28)':
     dependencies:
       '@payloadcms/db-vercel-postgres': 3.68.2(@types/pg@8.10.2)(payload@3.68.2(bufferutil@4.1.0)(graphql@16.12.0)(typescript@5.7.3)(utf-8-validate@6.0.6))
       '@payloadcms/next': 3.68.2(@types/react@19.2.1)(graphql@16.12.0)(monaco-editor@0.55.1)(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.68.2(bufferutil@4.1.0)(graphql@16.12.0)(typescript@5.7.3)(utf-8-validate@6.0.6))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3)
@@ -7653,8 +7640,10 @@ snapshots:
       - typescript
       - yjs
 
-  '@webko-labs/ui@file:../webko/packages/ui(665452d2add89cb32e7bf91f302a630d)':
+  '@webko-labs/ui@0.2.0(665452d2add89cb32e7bf91f302a630d)':
     dependencies:
+      '@hookform/resolvers': 3.10.0(react-hook-form@7.68.0(react@19.2.1))
+      '@payloadcms/richtext-lexical': 3.68.2(@faceless-ui/modal@3.0.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@faceless-ui/scroll-info@2.0.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@payloadcms/next@3.68.2(@types/react@19.2.1)(graphql@16.12.0)(monaco-editor@0.55.1)(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.68.2(bufferutil@4.1.0)(graphql@16.12.0)(typescript@5.7.3)(utf-8-validate@6.0.6))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3))(@types/react@19.2.1)(monaco-editor@0.55.1)(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.68.2(bufferutil@4.1.0)(graphql@16.12.0)(typescript@5.7.3)(utf-8-validate@6.0.6))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3)(yjs@13.6.28)
       '@radix-ui/react-accordion': 1.2.12(@types/react-dom@19.2.1(@types/react@19.2.1))(@types/react@19.2.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
       '@radix-ui/react-checkbox': 1.3.3(@types/react-dom@19.2.1(@types/react@19.2.1))(@types/react@19.2.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
       '@radix-ui/react-dialog': 1.1.15(@types/react-dom@19.2.1(@types/react@19.2.1))(@types/react@19.2.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -7665,18 +7654,15 @@ snapshots:
       '@radix-ui/react-slot': 1.2.4(@types/react@19.2.1)(react@19.2.1)
       class-variance-authority: 0.7.1
       clsx: 2.1.1
+      embla-carousel-autoplay: 8.6.0(embla-carousel@8.6.0)
       embla-carousel-react: 8.6.0(react@19.2.1)
       lucide-react: 0.468.0(react@19.2.1)
       next: 15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4)
+      next-intl: 4.6.1(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(react@19.2.1)(typescript@5.7.3)
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)
-      tailwind-merge: 2.6.0
-    optionalDependencies:
-      '@hookform/resolvers': 3.10.0(react-hook-form@7.68.0(react@19.2.1))
-      '@payloadcms/richtext-lexical': 3.68.2(@faceless-ui/modal@3.0.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@faceless-ui/scroll-info@2.0.0(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@payloadcms/next@3.68.2(@types/react@19.2.1)(graphql@16.12.0)(monaco-editor@0.55.1)(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.68.2(bufferutil@4.1.0)(graphql@16.12.0)(typescript@5.7.3)(utf-8-validate@6.0.6))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3))(@types/react@19.2.1)(monaco-editor@0.55.1)(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.68.2(bufferutil@4.1.0)(graphql@16.12.0)(typescript@5.7.3)(utf-8-validate@6.0.6))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3)(yjs@13.6.28)
-      embla-carousel-autoplay: 8.6.0(embla-carousel@8.6.0)
-      next-intl: 4.6.1(next@15.5.7(@babel/core@7.28.5)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(react@19.2.1)(typescript@5.7.3)
       react-hook-form: 7.68.0(react@19.2.1)
+      tailwind-merge: 2.6.0
       zod: 3.25.76
     transitivePeerDependencies:
       - '@types/react'
