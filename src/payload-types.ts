@@ -7,6 +7,29 @@
  */
 
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Contact1InfoItem".
+ */
+export type Contact1InfoItem =
+  | {
+      type: 'phone' | 'email' | 'address';
+      label: string;
+      value: string;
+      id?: string | null;
+    }[]
+  | null;
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Contact1SocialLink".
+ */
+export type Contact1SocialLink =
+  | {
+      platform: 'linkedin' | 'twitter' | 'facebook' | 'instagram' | 'youtube';
+      url: string;
+      id?: string | null;
+    }[]
+  | null;
+/**
  * Supported timezones in IANA format.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -67,8 +90,11 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    users: User;
+    pages: Page;
     media: Media;
+    users: User;
+    forms: Form;
+    'form-submissions': FormSubmission;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -76,20 +102,35 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
+    forms: FormsSelect<false> | FormsSelect<true>;
+    'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: string;
+    defaultIDType: number;
   };
-  fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
-  locale: null;
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'bg') | ('en' | 'bg')[];
+  globals: {
+    'site-settings': SiteSetting;
+    navigation: Navigation;
+    footer: Footer;
+    'ui-strings': UiString;
+    languages: Language;
+  };
+  globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    navigation: NavigationSelect<false> | NavigationSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
+    'ui-strings': UiStringsSelect<false> | UiStringsSelect<true>;
+    languages: LanguagesSelect<false> | LanguagesSelect<true>;
+  };
+  locale: 'en' | 'bg';
   user: User & {
     collection: 'users';
   };
@@ -117,11 +158,1323 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * Website pages
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  /**
+   * Page title
+   */
+  title: string;
+  /**
+   * URL segment (e.g., 'cleaning' for /services/cleaning). Leave empty for homepage.
+   */
+  slug?: string | null;
+  /**
+   * Parent page (leave empty for top-level pages)
+   */
+  parent?: (number | null) | Page;
+  /**
+   * Full URL path (auto-generated from parent + slug)
+   */
+  pathname: string;
+  /**
+   * Navigation style for this page (default uses Site Settings)
+   */
+  navigationStyle?: ('default' | 'classic' | 'modern' | 'transparent') | null;
+  /**
+   * Page template determines available sections and layout
+   */
+  template: 'home' | 'about' | 'services' | 'service' | 'contact';
+  /**
+   * Build your page by adding and arranging sections
+   */
+  sections?:
+    | (
+        | {
+            /**
+             * Main headline
+             */
+            title: string;
+            /**
+             * Supporting text below the headline
+             */
+            subtitle?: string | null;
+            /**
+             * Call-to-action button text
+             */
+            ctaLabel?: string | null;
+            ctaLink: {
+              /**
+               * Link type
+               */
+              type: 'internal' | 'external' | 'anchor';
+              /**
+               * Select a page to link to
+               */
+              page?: (number | null) | Page;
+              /**
+               * Full URL (e.g., https://example.com)
+               */
+              url?: string | null;
+              /**
+               * Anchor (e.g., #contact or contact)
+               */
+              anchor?: string | null;
+              /**
+               * Open in new tab
+               */
+              newTab?: boolean | null;
+            };
+            /**
+             * Background image (gradient overlay will be applied)
+             */
+            backgroundImage?: (number | null) | Media;
+            /**
+             * Opacity of the gradient overlay (0-100)
+             */
+            overlayOpacity?: number | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero-1';
+          }
+        | {
+            /**
+             * Main headline
+             */
+            title: string;
+            /**
+             * Supporting text
+             */
+            subtitle?: string | null;
+            /**
+             * Button text (e.g., Learn More)
+             */
+            ctaLabel?: string | null;
+            ctaLink: {
+              /**
+               * Link type
+               */
+              type: 'internal' | 'external' | 'anchor';
+              /**
+               * Select a page to link to
+               */
+              page?: (number | null) | Page;
+              /**
+               * Full URL (e.g., https://example.com)
+               */
+              url?: string | null;
+              /**
+               * Anchor (e.g., #contact or contact)
+               */
+              anchor?: string | null;
+              /**
+               * Open in new tab
+               */
+              newTab?: boolean | null;
+            };
+            /**
+             * Section background style
+             */
+            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero-2';
+          }
+        | {
+            /**
+             * Visual style of the hero
+             */
+            variant?: ('gradient' | 'image' | 'dark') | null;
+            /**
+             * Background image (only used when variant is 'Image Background')
+             */
+            backgroundImage?: (number | null) | Media;
+            /**
+             * Darkness of the overlay on the image
+             */
+            overlayOpacity?: ('light' | 'medium' | 'dark') | null;
+            /**
+             * Small text above heading (e.g., 'About Us', 'Our Services')
+             */
+            badge?: string | null;
+            /**
+             * Page heading
+             */
+            heading?: string | null;
+            /**
+             * Subtitle text below heading
+             */
+            subtitle?: string | null;
+            /**
+             * Show breadcrumb navigation
+             */
+            showBreadcrumbs?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero-3';
+          }
+        | {
+            /**
+             * Small badge/tagline above the title (e.g., 'From Dusty to Dazzling')
+             */
+            badge?: string | null;
+            /**
+             * Main headline
+             */
+            title: string;
+            /**
+             * Word from the title to highlight with primary color background
+             */
+            highlightedWord?: string | null;
+            /**
+             * Supporting text below the headline
+             */
+            subtitle?: string | null;
+            /**
+             * Primary button text
+             */
+            primaryCtaLabel?: string | null;
+            /**
+             * Secondary button text
+             */
+            secondaryCtaLabel?: string | null;
+            primaryCtaLink: {
+              /**
+               * Link type
+               */
+              type: 'internal' | 'external' | 'anchor';
+              /**
+               * Select a page to link to
+               */
+              page?: (number | null) | Page;
+              /**
+               * Full URL (e.g., https://example.com)
+               */
+              url?: string | null;
+              /**
+               * Anchor (e.g., #contact or contact)
+               */
+              anchor?: string | null;
+              /**
+               * Open in new tab
+               */
+              newTab?: boolean | null;
+            };
+            secondaryCtaLink: {
+              /**
+               * Link type
+               */
+              type: 'internal' | 'external' | 'anchor';
+              /**
+               * Select a page to link to
+               */
+              page?: (number | null) | Page;
+              /**
+               * Full URL (e.g., https://example.com)
+               */
+              url?: string | null;
+              /**
+               * Anchor (e.g., #contact or contact)
+               */
+              anchor?: string | null;
+              /**
+               * Open in new tab
+               */
+              newTab?: boolean | null;
+            };
+            /**
+             * Hero image (displayed on the right side)
+             */
+            image?: (number | null) | Media;
+            /**
+             * Trust indicators (e.g., 'Verified Staff', 'Insured', 'Eco-Friendly')
+             */
+            trustBadges?:
+              | {
+                  label: string;
+                  id?: string | null;
+                }[]
+              | null;
+            /**
+             * Show stats card overlay on the image
+             */
+            showStats?: boolean | null;
+            /**
+             * Rating value
+             */
+            statsRating?: string | null;
+            /**
+             * Review count label
+             */
+            statsReviewCount?: string | null;
+            /**
+             * Experience value
+             */
+            statsExperience?: string | null;
+            /**
+             * Experience label
+             */
+            statsExperienceLabel?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero-4';
+          }
+        | {
+            /**
+             * Section title with accent underline
+             */
+            title?: string | null;
+            /**
+             * Main content text
+             */
+            content?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            alignment?: ('center' | 'left') | null;
+            bgVariant?: ('white' | 'light') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'lead-1';
+          }
+        | {
+            /**
+             * Section background style
+             */
+            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            /**
+             * Show section header above content
+             */
+            showHeader?: boolean | null;
+            /**
+             * Small text above the heading
+             */
+            badge?: string | null;
+            /**
+             * Section heading
+             */
+            heading?: string | null;
+            /**
+             * Section subheading
+             */
+            subheading?: string | null;
+            /**
+             * Rich text content
+             */
+            content: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            /**
+             * Content width/layout
+             */
+            layout?: ('default' | 'wide' | 'full' | 'two-columns') | null;
+            /**
+             * Apply typography styles (prose) to content
+             */
+            prose?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'content-1';
+          }
+        | {
+            /**
+             * Optional section title above the quote
+             */
+            title?: string | null;
+            /**
+             * The quote text
+             */
+            quote: string;
+            /**
+             * Optional attribution (author or source)
+             */
+            attribution?: string | null;
+            bgVariant?: ('white' | 'light') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'quote-1';
+          }
+        | {
+            /**
+             * Section background style
+             */
+            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            /**
+             * Small text above the heading
+             */
+            badge?: string | null;
+            /**
+             * Section heading
+             */
+            heading?: string | null;
+            /**
+             * Section subheading or description
+             */
+            subheading?: string | null;
+            left?: {
+              title?: string | null;
+              content?: string | null;
+              image?: (number | null) | Media;
+            };
+            right?: {
+              title?: string | null;
+              content?: string | null;
+              image?: (number | null) | Media;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'split-1';
+          }
+        | {
+            image: number | Media;
+            /**
+             * Optional caption below the image
+             */
+            caption?: string | null;
+            aspectRatio?: ('16:9' | '4:3' | '1:1' | 'auto') | null;
+            /**
+             * Apply rounded corners
+             */
+            rounded?: boolean | null;
+            /**
+             * Apply shadow effect
+             */
+            shadow?: boolean | null;
+            bgVariant?: ('white' | 'light') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'image-1';
+          }
+        | {
+            /**
+             * Small text above the heading
+             */
+            badge?: string | null;
+            /**
+             * Section heading
+             */
+            heading?: string | null;
+            /**
+             * Section subheading or description
+             */
+            subheading?: string | null;
+            cards?:
+              | {
+                  /**
+                   * Icon to display
+                   */
+                  icon?:
+                    | (
+                        | 'home'
+                        | 'building'
+                        | 'sparkles'
+                        | 'brush'
+                        | 'droplets'
+                        | 'leaf'
+                        | 'shield'
+                        | 'clock'
+                        | 'star'
+                        | 'truck'
+                        | 'heart'
+                        | 'users'
+                        | 'award'
+                        | 'message-square'
+                      )
+                    | null;
+                  title: string;
+                  description?: string | null;
+                  /**
+                   * Link to an internal page
+                   */
+                  page?: (number | null) | Page;
+                  externalLink: {
+                    /**
+                     * Link type
+                     */
+                    type: 'internal' | 'external' | 'anchor';
+                    /**
+                     * Select a page to link to
+                     */
+                    page?: (number | null) | Page;
+                    /**
+                     * Full URL (e.g., https://example.com)
+                     */
+                    url?: string | null;
+                    /**
+                     * Anchor (e.g., #contact or contact)
+                     */
+                    anchor?: string | null;
+                    /**
+                     * Open in new tab
+                     */
+                    newTab?: boolean | null;
+                  };
+                  /**
+                   * Link text
+                   */
+                  linkLabel?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            /**
+             * Visual style for the cards
+             */
+            cardStyle?: ('feature' | 'service' | 'service-compact') | null;
+            columns?: ('2' | '3' | '4') | null;
+            bgVariant?: ('white' | 'light') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cards-1';
+          }
+        | {
+            /**
+             * Section background style
+             */
+            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            /**
+             * Small text above the heading
+             */
+            badge?: string | null;
+            /**
+             * Section heading
+             */
+            heading?: string | null;
+            /**
+             * Section subheading or description
+             */
+            subheading?: string | null;
+            items?:
+              | {
+                  /**
+                   * The number/value (e.g., '500+', '10K', '99%')
+                   */
+                  value: string;
+                  label: string;
+                  variant?: ('navy' | 'teal' | 'yellow' | 'white') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            layout?: ('grid-2' | 'grid-3' | 'grid-4') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'stats-1';
+          }
+        | {
+            /**
+             * Section background style
+             */
+            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            /**
+             * Small text above the heading
+             */
+            badge?: string | null;
+            /**
+             * Section heading
+             */
+            heading?: string | null;
+            /**
+             * Section subheading or description
+             */
+            subheading?: string | null;
+            tiers?:
+              | {
+                  name: string;
+                  price: string;
+                  period?: string | null;
+                  description?: string | null;
+                  featured?: boolean | null;
+                  features?:
+                    | {
+                        feature: string;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  ctaLabel?: string | null;
+                  ctaLink: {
+                    /**
+                     * Link type
+                     */
+                    type: 'internal' | 'external' | 'anchor';
+                    /**
+                     * Select a page to link to
+                     */
+                    page?: (number | null) | Page;
+                    /**
+                     * Full URL (e.g., https://example.com)
+                     */
+                    url?: string | null;
+                    /**
+                     * Anchor (e.g., #contact or contact)
+                     */
+                    anchor?: string | null;
+                    /**
+                     * Open in new tab
+                     */
+                    newTab?: boolean | null;
+                  };
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'pricing-1';
+          }
+        | {
+            /**
+             * Section background style
+             */
+            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            /**
+             * Small text above the heading
+             */
+            badge?: string | null;
+            /**
+             * Section heading
+             */
+            heading?: string | null;
+            /**
+             * Section subheading or description
+             */
+            subheading?: string | null;
+            items?:
+              | {
+                  title: string;
+                  description?: string | null;
+                  /**
+                   * Icon to display
+                   */
+                  icon?:
+                    | (
+                        | 'home'
+                        | 'building'
+                        | 'sparkles'
+                        | 'brush'
+                        | 'droplets'
+                        | 'leaf'
+                        | 'shield'
+                        | 'clock'
+                        | 'star'
+                        | 'truck'
+                        | 'heart'
+                        | 'users'
+                        | 'award'
+                        | 'message-square'
+                      )
+                    | null;
+                  id?: string | null;
+                }[]
+              | null;
+            layout?: ('grid-2' | 'grid-3' | 'grid-4') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'values-1';
+          }
+        | {
+            /**
+             * Small text above heading (e.g., 'Our Story')
+             */
+            badge?: string | null;
+            /**
+             * Main heading
+             */
+            heading?: string | null;
+            /**
+             * Description text below heading
+             */
+            description?: string | null;
+            /**
+             * CTA button text
+             */
+            ctaLabel?: string | null;
+            ctaLink: {
+              /**
+               * Link type
+               */
+              type: 'internal' | 'external' | 'anchor';
+              /**
+               * Select a page to link to
+               */
+              page?: (number | null) | Page;
+              /**
+               * Full URL (e.g., https://example.com)
+               */
+              url?: string | null;
+              /**
+               * Anchor (e.g., #contact or contact)
+               */
+              anchor?: string | null;
+              /**
+               * Open in new tab
+               */
+              newTab?: boolean | null;
+            };
+            /**
+             * Value pills displayed on the right side
+             */
+            values?:
+              | {
+                  label: string;
+                  id?: string | null;
+                }[]
+              | null;
+            /**
+             * Show stats cards below
+             */
+            showStats?: boolean | null;
+            /**
+             * Stats cards displayed at the bottom
+             */
+            stats?:
+              | {
+                  /**
+                   * The stat value (e.g., '10,000+')
+                   */
+                  value: string;
+                  /**
+                   * The stat label (e.g., 'Spaces Cleaned')
+                   */
+                  label: string;
+                  /**
+                   * Card color variant
+                   */
+                  variant?: ('navy' | 'teal' | 'cyan' | 'sky') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'values-2';
+          }
+        | {
+            title?: string | null;
+            items?:
+              | {
+                  text: string;
+                  id?: string | null;
+                }[]
+              | null;
+            columns?: ('1' | '2') | null;
+            bgVariant?: ('white' | 'light') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'checklist-1';
+          }
+        | {
+            title?: string | null;
+            subtitle?: string | null;
+            items?:
+              | {
+                  /**
+                   * Icon to display
+                   */
+                  icon?:
+                    | (
+                        | 'home'
+                        | 'building'
+                        | 'sparkles'
+                        | 'brush'
+                        | 'droplets'
+                        | 'leaf'
+                        | 'shield'
+                        | 'clock'
+                        | 'star'
+                        | 'truck'
+                        | 'heart'
+                        | 'users'
+                        | 'award'
+                        | 'message-square'
+                      )
+                    | null;
+                  title: string;
+                  description?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            columns?: ('1' | '2') | null;
+            bgVariant?: ('white' | 'light') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'steps-1';
+          }
+        | {
+            /**
+             * Section background style
+             */
+            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            /**
+             * Small text above the heading
+             */
+            badge?: string | null;
+            /**
+             * Section heading
+             */
+            heading?: string | null;
+            /**
+             * Section subheading or description
+             */
+            subheading?: string | null;
+            events?:
+              | {
+                  /**
+                   * Year or date
+                   */
+                  year: string;
+                  title: string;
+                  description?: string | null;
+                  image?: (number | null) | Media;
+                  id?: string | null;
+                }[]
+              | null;
+            /**
+             * Alternate events left/right on desktop
+             */
+            alternating?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'timeline-1';
+          }
+        | {
+            /**
+             * Section background style
+             */
+            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            /**
+             * Small text above the heading
+             */
+            badge?: string | null;
+            /**
+             * Section heading
+             */
+            heading?: string | null;
+            /**
+             * Section subheading or description
+             */
+            subheading?: string | null;
+            members?:
+              | {
+                  name: string;
+                  role?: string | null;
+                  bio?: string | null;
+                  photo?: (number | null) | Media;
+                  /**
+                   * Social media links
+                   */
+                  socialLinks?:
+                    | {
+                        /**
+                         * Social media platform
+                         */
+                        platform: 'facebook' | 'instagram' | 'twitter' | 'linkedin' | 'youtube' | 'tiktok';
+                        /**
+                         * Full URL to social profile
+                         */
+                        url: string;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  id?: string | null;
+                }[]
+              | null;
+            layout?: ('grid-2' | 'grid-3' | 'grid-4') | null;
+            showBio?: boolean | null;
+            showSocialLinks?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'team-1';
+          }
+        | {
+            /**
+             * Section background style
+             */
+            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            /**
+             * Small text above the heading
+             */
+            badge?: string | null;
+            /**
+             * Section heading
+             */
+            heading?: string | null;
+            /**
+             * Section subheading or description
+             */
+            subheading?: string | null;
+            items?:
+              | {
+                  quote: string;
+                  author?: string | null;
+                  role?: string | null;
+                  company?: string | null;
+                  photo?: (number | null) | Media;
+                  rating?: number | null;
+                  id?: string | null;
+                }[]
+              | null;
+            layout?: ('carousel' | 'grid') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'testimonials-1';
+          }
+        | {
+            /**
+             * Small text above the heading
+             */
+            badge?: string | null;
+            /**
+             * Section heading
+             */
+            heading?: string | null;
+            /**
+             * Section subheading or description
+             */
+            subheading?: string | null;
+            items?:
+              | {
+                  title: string;
+                  date?: string | null;
+                  excerpt?: string | null;
+                  image?: (number | null) | Media;
+                  /**
+                   * External URL
+                   */
+                  link?: string | null;
+                  category?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            bgVariant?: ('white' | 'light') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'articles-1';
+          }
+        | {
+            /**
+             * Section background style
+             */
+            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            /**
+             * Small text above the heading
+             */
+            badge?: string | null;
+            /**
+             * Section heading
+             */
+            heading?: string | null;
+            /**
+             * Section subheading or description
+             */
+            subheading?: string | null;
+            items?:
+              | {
+                  question: string;
+                  answer?: {
+                    root: {
+                      type: string;
+                      children: {
+                        type: any;
+                        version: number;
+                        [k: string]: unknown;
+                      }[];
+                      direction: ('ltr' | 'rtl') | null;
+                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                      indent: number;
+                      version: number;
+                    };
+                    [k: string]: unknown;
+                  } | null;
+                  id?: string | null;
+                }[]
+              | null;
+            showCta?: boolean | null;
+            ctaText?: string | null;
+            ctaButtonLabel?: string | null;
+            ctaLink: {
+              /**
+               * Link type
+               */
+              type: 'internal' | 'external' | 'anchor';
+              /**
+               * Select a page to link to
+               */
+              page?: (number | null) | Page;
+              /**
+               * Full URL (e.g., https://example.com)
+               */
+              url?: string | null;
+              /**
+               * Anchor (e.g., #contact or contact)
+               */
+              anchor?: string | null;
+              /**
+               * Open in new tab
+               */
+              newTab?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faq-1';
+          }
+        | {
+            headingWhite: string;
+            headingAccent: string;
+            buttonText: string;
+            buttonLink: {
+              /**
+               * Link type
+               */
+              type: 'internal' | 'external' | 'anchor';
+              /**
+               * Select a page to link to
+               */
+              page?: (number | null) | Page;
+              /**
+               * Full URL (e.g., https://example.com)
+               */
+              url?: string | null;
+              /**
+               * Anchor (e.g., #contact or contact)
+               */
+              anchor?: string | null;
+              /**
+               * Open in new tab
+               */
+              newTab?: boolean | null;
+            };
+            /**
+             * If not provided, a gradient background will be used
+             */
+            backgroundImage?: (number | null) | Media;
+            /**
+             * Section background style
+             */
+            bgVariant: 'white' | 'light' | 'gradient' | 'dark';
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta-1';
+          }
+        | {
+            /**
+             * Section background style
+             */
+            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            /**
+             * Form on right, info on left
+             */
+            reversed?: boolean | null;
+            /**
+             * Select the form to display
+             */
+            form: number | Form;
+            formHeading?: string | null;
+            formSubheading?: string | null;
+            infoHeading?: string | null;
+            infoSubheading?: string | null;
+            overrideContactInfo?: boolean | null;
+            contactItems?: Contact1InfoItem;
+            overrideBusinessHours?: boolean | null;
+            /**
+             * Business hours by day
+             */
+            businessHours?:
+              | {
+                  /**
+                   * Day or day range
+                   */
+                  day: string;
+                  /**
+                   * Operating hours
+                   */
+                  hours: string;
+                  id?: string | null;
+                }[]
+              | null;
+            overrideSocialLinks?: boolean | null;
+            socialLinks?: Contact1SocialLink;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'contact-1';
+          }
+        | {
+            /**
+             * Section background style
+             */
+            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            /**
+             * Small text above the heading
+             */
+            badge?: string | null;
+            /**
+             * Section heading
+             */
+            heading?: string | null;
+            /**
+             * Section subheading or description
+             */
+            subheading?: string | null;
+            /**
+             * Select the form to display
+             */
+            form: number | Form;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'form-1';
+          }
+        | {
+            /**
+             * Section background style
+             */
+            bgVariant?: ('white' | 'light' | 'gradient' | 'dark') | null;
+            showHeader?: boolean | null;
+            badge?: string | null;
+            heading?: string | null;
+            subheading?: string | null;
+            /**
+             * Address for the map (uses site settings if empty)
+             */
+            address?: string | null;
+            addressLabel?: string | null;
+            height?: ('small' | 'medium' | 'large') | null;
+            zoom?: number | null;
+            fullWidth?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'map-1';
+          }
+      )[]
+    | null;
+  /**
+   * Service-specific information
+   */
+  serviceData?: {
+    /**
+     * Short description for listings and cards
+     */
+    description?: string | null;
+    /**
+     * Detailed service content (WYSIWYG editor)
+     */
+    content?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    /**
+     * Icon displayed on service cards
+     */
+    icon?:
+      | (
+          | 'home'
+          | 'building'
+          | 'sparkles'
+          | 'brush'
+          | 'droplets'
+          | 'leaf'
+          | 'shield'
+          | 'clock'
+          | 'star'
+          | 'truck'
+          | 'heart'
+          | 'users'
+          | 'award'
+          | 'message-square'
+        )
+      | null;
+    /**
+     * Service image for hero and cards
+     */
+    image?: (number | null) | Media;
+    /**
+     * Starting price (e.g., 'From $99' or 'от 99 лв.')
+     */
+    price?: string | null;
+    /**
+     * Key features included in this service
+     */
+    features?:
+      | {
+          feature: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  alt: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * Configurable forms with validation rules
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms".
+ */
+export interface Form {
+  id: number;
+  /**
+   * Form name (e.g., 'Contact Form', 'Quote Request')
+   */
+  title: string;
+  /**
+   * Text displayed on the submit button
+   */
+  submitButtonText?: string | null;
+  /**
+   * Message shown after successful submission
+   */
+  successMessage?: string | null;
+  /**
+   * Configure email notifications when form is submitted
+   */
+  emailNotification?: {
+    /**
+     * Send email notification when form is submitted
+     */
+    enabled?: boolean | null;
+    /**
+     * Email address to receive notifications
+     */
+    recipientEmail?: string | null;
+    /**
+     * Subject line for notification email
+     */
+    emailSubject?: string | null;
+  };
+  /**
+   * Form fields configuration
+   */
+  fields: {
+    /**
+     * Field key (used in form data, e.g., 'firstName', 'email')
+     */
+    name: string;
+    /**
+     * Label displayed above the field
+     */
+    label: string;
+    /**
+     * Type of input field
+     */
+    type: 'text' | 'email' | 'tel' | 'textarea' | 'select' | 'checkbox';
+    /**
+     * Placeholder text inside the field
+     */
+    placeholder?: string | null;
+    /**
+     * Is this field required?
+     */
+    required?: boolean | null;
+    /**
+     * Field width in the form layout
+     */
+    width?: ('full' | 'half') | null;
+    /**
+     * Minimum character length
+     */
+    minLength?: number | null;
+    /**
+     * Maximum character length
+     */
+    maxLength?: number | null;
+    /**
+     * Regex pattern for validation (advanced)
+     */
+    pattern?: string | null;
+    /**
+     * Custom error message when validation fails
+     */
+    errorMessage?: string | null;
+    /**
+     * Options for select dropdown
+     */
+    options?:
+      | {
+          /**
+           * Option value (stored in form data)
+           */
+          value: string;
+          /**
+           * Option label (displayed to user)
+           */
+          label: string;
+          id?: string | null;
+        }[]
+      | null;
+    id?: string | null;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
-  id: string;
+  id: number;
+  name?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -141,30 +1494,42 @@ export interface User {
   password?: string | null;
 }
 /**
+ * Submitted form data
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "form-submissions".
  */
-export interface Media {
-  id: string;
-  alt: string;
+export interface FormSubmission {
+  id: number;
+  /**
+   * The form that was submitted
+   */
+  form: number | Form;
+  /**
+   * Submitted form data (field name -> value)
+   */
+  data:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * When the form was submitted
+   */
+  submittedAt: string;
   updatedAt: string;
   createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
-  id: string;
+  id: number;
   key: string;
   data:
     | {
@@ -181,20 +1546,32 @@ export interface PayloadKv {
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: string;
+  id: number;
   document?:
     | ({
-        relationTo: 'users';
-        value: string | User;
+        relationTo: 'pages';
+        value: number | Page;
       } | null)
     | ({
         relationTo: 'media';
-        value: string | Media;
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: number | User;
+      } | null)
+    | ({
+        relationTo: 'forms';
+        value: number | Form;
+      } | null)
+    | ({
+        relationTo: 'form-submissions';
+        value: number | FormSubmission;
       } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   updatedAt: string;
   createdAt: string;
@@ -204,10 +1581,10 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: string;
+  id: number;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   key?: string | null;
   value?:
@@ -227,7 +1604,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: string;
+  id: number;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
@@ -235,9 +1612,618 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  parent?: T;
+  pathname?: T;
+  navigationStyle?: T;
+  template?: T;
+  sections?:
+    | T
+    | {
+        'hero-1'?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              ctaLabel?: T;
+              ctaLink?:
+                | T
+                | {
+                    type?: T;
+                    page?: T;
+                    url?: T;
+                    anchor?: T;
+                    newTab?: T;
+                  };
+              backgroundImage?: T;
+              overlayOpacity?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'hero-2'?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              ctaLabel?: T;
+              ctaLink?:
+                | T
+                | {
+                    type?: T;
+                    page?: T;
+                    url?: T;
+                    anchor?: T;
+                    newTab?: T;
+                  };
+              bgVariant?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'hero-3'?:
+          | T
+          | {
+              variant?: T;
+              backgroundImage?: T;
+              overlayOpacity?: T;
+              badge?: T;
+              heading?: T;
+              subtitle?: T;
+              showBreadcrumbs?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'hero-4'?:
+          | T
+          | {
+              badge?: T;
+              title?: T;
+              highlightedWord?: T;
+              subtitle?: T;
+              primaryCtaLabel?: T;
+              secondaryCtaLabel?: T;
+              primaryCtaLink?:
+                | T
+                | {
+                    type?: T;
+                    page?: T;
+                    url?: T;
+                    anchor?: T;
+                    newTab?: T;
+                  };
+              secondaryCtaLink?:
+                | T
+                | {
+                    type?: T;
+                    page?: T;
+                    url?: T;
+                    anchor?: T;
+                    newTab?: T;
+                  };
+              image?: T;
+              trustBadges?:
+                | T
+                | {
+                    label?: T;
+                    id?: T;
+                  };
+              showStats?: T;
+              statsRating?: T;
+              statsReviewCount?: T;
+              statsExperience?: T;
+              statsExperienceLabel?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'lead-1'?:
+          | T
+          | {
+              title?: T;
+              content?: T;
+              alignment?: T;
+              bgVariant?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'content-1'?:
+          | T
+          | {
+              bgVariant?: T;
+              showHeader?: T;
+              badge?: T;
+              heading?: T;
+              subheading?: T;
+              content?: T;
+              layout?: T;
+              prose?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'quote-1'?:
+          | T
+          | {
+              title?: T;
+              quote?: T;
+              attribution?: T;
+              bgVariant?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'split-1'?:
+          | T
+          | {
+              bgVariant?: T;
+              badge?: T;
+              heading?: T;
+              subheading?: T;
+              left?:
+                | T
+                | {
+                    title?: T;
+                    content?: T;
+                    image?: T;
+                  };
+              right?:
+                | T
+                | {
+                    title?: T;
+                    content?: T;
+                    image?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'image-1'?:
+          | T
+          | {
+              image?: T;
+              caption?: T;
+              aspectRatio?: T;
+              rounded?: T;
+              shadow?: T;
+              bgVariant?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'cards-1'?:
+          | T
+          | {
+              badge?: T;
+              heading?: T;
+              subheading?: T;
+              cards?:
+                | T
+                | {
+                    icon?: T;
+                    title?: T;
+                    description?: T;
+                    page?: T;
+                    externalLink?:
+                      | T
+                      | {
+                          type?: T;
+                          page?: T;
+                          url?: T;
+                          anchor?: T;
+                          newTab?: T;
+                        };
+                    linkLabel?: T;
+                    id?: T;
+                  };
+              cardStyle?: T;
+              columns?: T;
+              bgVariant?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'stats-1'?:
+          | T
+          | {
+              bgVariant?: T;
+              badge?: T;
+              heading?: T;
+              subheading?: T;
+              items?:
+                | T
+                | {
+                    value?: T;
+                    label?: T;
+                    variant?: T;
+                    id?: T;
+                  };
+              layout?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'pricing-1'?:
+          | T
+          | {
+              bgVariant?: T;
+              badge?: T;
+              heading?: T;
+              subheading?: T;
+              tiers?:
+                | T
+                | {
+                    name?: T;
+                    price?: T;
+                    period?: T;
+                    description?: T;
+                    featured?: T;
+                    features?:
+                      | T
+                      | {
+                          feature?: T;
+                          id?: T;
+                        };
+                    ctaLabel?: T;
+                    ctaLink?:
+                      | T
+                      | {
+                          type?: T;
+                          page?: T;
+                          url?: T;
+                          anchor?: T;
+                          newTab?: T;
+                        };
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'values-1'?:
+          | T
+          | {
+              bgVariant?: T;
+              badge?: T;
+              heading?: T;
+              subheading?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    description?: T;
+                    icon?: T;
+                    id?: T;
+                  };
+              layout?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'values-2'?:
+          | T
+          | {
+              badge?: T;
+              heading?: T;
+              description?: T;
+              ctaLabel?: T;
+              ctaLink?:
+                | T
+                | {
+                    type?: T;
+                    page?: T;
+                    url?: T;
+                    anchor?: T;
+                    newTab?: T;
+                  };
+              values?:
+                | T
+                | {
+                    label?: T;
+                    id?: T;
+                  };
+              showStats?: T;
+              stats?:
+                | T
+                | {
+                    value?: T;
+                    label?: T;
+                    variant?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'checklist-1'?:
+          | T
+          | {
+              title?: T;
+              items?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              columns?: T;
+              bgVariant?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'steps-1'?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              items?:
+                | T
+                | {
+                    icon?: T;
+                    title?: T;
+                    description?: T;
+                    id?: T;
+                  };
+              columns?: T;
+              bgVariant?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'timeline-1'?:
+          | T
+          | {
+              bgVariant?: T;
+              badge?: T;
+              heading?: T;
+              subheading?: T;
+              events?:
+                | T
+                | {
+                    year?: T;
+                    title?: T;
+                    description?: T;
+                    image?: T;
+                    id?: T;
+                  };
+              alternating?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'team-1'?:
+          | T
+          | {
+              bgVariant?: T;
+              badge?: T;
+              heading?: T;
+              subheading?: T;
+              members?:
+                | T
+                | {
+                    name?: T;
+                    role?: T;
+                    bio?: T;
+                    photo?: T;
+                    socialLinks?:
+                      | T
+                      | {
+                          platform?: T;
+                          url?: T;
+                          id?: T;
+                        };
+                    id?: T;
+                  };
+              layout?: T;
+              showBio?: T;
+              showSocialLinks?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'testimonials-1'?:
+          | T
+          | {
+              bgVariant?: T;
+              badge?: T;
+              heading?: T;
+              subheading?: T;
+              items?:
+                | T
+                | {
+                    quote?: T;
+                    author?: T;
+                    role?: T;
+                    company?: T;
+                    photo?: T;
+                    rating?: T;
+                    id?: T;
+                  };
+              layout?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'articles-1'?:
+          | T
+          | {
+              badge?: T;
+              heading?: T;
+              subheading?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    date?: T;
+                    excerpt?: T;
+                    image?: T;
+                    link?: T;
+                    category?: T;
+                    id?: T;
+                  };
+              bgVariant?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'faq-1'?:
+          | T
+          | {
+              bgVariant?: T;
+              badge?: T;
+              heading?: T;
+              subheading?: T;
+              items?:
+                | T
+                | {
+                    question?: T;
+                    answer?: T;
+                    id?: T;
+                  };
+              showCta?: T;
+              ctaText?: T;
+              ctaButtonLabel?: T;
+              ctaLink?:
+                | T
+                | {
+                    type?: T;
+                    page?: T;
+                    url?: T;
+                    anchor?: T;
+                    newTab?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'cta-1'?:
+          | T
+          | {
+              headingWhite?: T;
+              headingAccent?: T;
+              buttonText?: T;
+              buttonLink?:
+                | T
+                | {
+                    type?: T;
+                    page?: T;
+                    url?: T;
+                    anchor?: T;
+                    newTab?: T;
+                  };
+              backgroundImage?: T;
+              bgVariant?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'contact-1'?:
+          | T
+          | {
+              bgVariant?: T;
+              reversed?: T;
+              form?: T;
+              formHeading?: T;
+              formSubheading?: T;
+              infoHeading?: T;
+              infoSubheading?: T;
+              overrideContactInfo?: T;
+              contactItems?: T | Contact1InfoItemSelect<T>;
+              overrideBusinessHours?: T;
+              businessHours?:
+                | T
+                | {
+                    day?: T;
+                    hours?: T;
+                    id?: T;
+                  };
+              overrideSocialLinks?: T;
+              socialLinks?: T | Contact1SocialLinkSelect<T>;
+              id?: T;
+              blockName?: T;
+            };
+        'form-1'?:
+          | T
+          | {
+              bgVariant?: T;
+              badge?: T;
+              heading?: T;
+              subheading?: T;
+              form?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'map-1'?:
+          | T
+          | {
+              bgVariant?: T;
+              showHeader?: T;
+              badge?: T;
+              heading?: T;
+              subheading?: T;
+              address?: T;
+              addressLabel?: T;
+              height?: T;
+              zoom?: T;
+              fullWidth?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  serviceData?:
+    | T
+    | {
+        description?: T;
+        content?: T;
+        icon?: T;
+        image?: T;
+        price?: T;
+        features?:
+          | T
+          | {
+              feature?: T;
+              id?: T;
+            };
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Contact1InfoItem_select".
+ */
+export interface Contact1InfoItemSelect<T extends boolean = true> {
+  type?: T;
+  label?: T;
+  value?: T;
+  id?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Contact1SocialLink_select".
+ */
+export interface Contact1SocialLinkSelect<T extends boolean = true> {
+  platform?: T;
+  url?: T;
+  id?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  name?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -257,21 +2243,54 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
+ * via the `definition` "forms_select".
  */
-export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
+export interface FormsSelect<T extends boolean = true> {
+  title?: T;
+  submitButtonText?: T;
+  successMessage?: T;
+  emailNotification?:
+    | T
+    | {
+        enabled?: T;
+        recipientEmail?: T;
+        emailSubject?: T;
+      };
+  fields?:
+    | T
+    | {
+        name?: T;
+        label?: T;
+        type?: T;
+        placeholder?: T;
+        required?: T;
+        width?: T;
+        minLength?: T;
+        maxLength?: T;
+        pattern?: T;
+        errorMessage?: T;
+        options?:
+          | T
+          | {
+              value?: T;
+              label?: T;
+              id?: T;
+            };
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "form-submissions_select".
+ */
+export interface FormSubmissionsSelect<T extends boolean = true> {
+  form?: T;
+  data?: T;
+  submittedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -312,6 +2331,1014 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Global site configuration
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  /**
+   * Website name
+   */
+  siteName: string;
+  /**
+   * Site logo
+   */
+  logo?: (number | null) | Media;
+  /**
+   * Favicon (16x16 or 32x32)
+   */
+  favicon?: (number | null) | Media;
+  /**
+   * Default navigation style for all pages (can be overridden per page)
+   */
+  defaultNavigationStyle?: ('classic' | 'modern' | 'transparent') | null;
+  /**
+   * Contact information
+   */
+  contact?: {
+    /**
+     * Phone number
+     */
+    phone?: string | null;
+    /**
+     * Email address
+     */
+    email?: string | null;
+    /**
+     * Physical address (localized)
+     */
+    address?: string | null;
+  };
+  /**
+   * Business hours by day
+   */
+  businessHours?:
+    | {
+        /**
+         * Day or day range
+         */
+        day: string;
+        /**
+         * Operating hours
+         */
+        hours: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Social media links
+   */
+  socialLinks?:
+    | {
+        /**
+         * Social media platform
+         */
+        platform: 'facebook' | 'instagram' | 'twitter' | 'linkedin' | 'youtube' | 'tiktok';
+        /**
+         * Full URL to social profile
+         */
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  theme?: {
+    /**
+     * Main brand color (buttons, links, accents)
+     */
+    primaryColor?: string | null;
+    /**
+     * Secondary brand color (headings, dark backgrounds)
+     */
+    secondaryColor?: string | null;
+    /**
+     * Accent color for highlights
+     */
+    accentColor?: string | null;
+  };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Main site navigation menu
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation".
+ */
+export interface Navigation {
+  id: number;
+  /**
+   * Brand/Logo settings
+   */
+  brand: {
+    /**
+     * When enabled, uses site name and logo from Site Settings
+     */
+    useGlobalBrand?: boolean | null;
+    /**
+     * Site logo (replaces text brand when set)
+     */
+    logo?: (number | null) | Media;
+    /**
+     * Link when clicking the logo (default: home page)
+     */
+    logoLink: {
+      /**
+       * Link type
+       */
+      type: 'internal' | 'external' | 'anchor';
+      /**
+       * Select a page to link to
+       */
+      page?: (number | null) | Page;
+      /**
+       * Full URL (e.g., https://example.com)
+       */
+      url?: string | null;
+      /**
+       * Anchor (e.g., #contact or contact)
+       */
+      anchor?: string | null;
+      /**
+       * Open in new tab
+       */
+      newTab?: boolean | null;
+    };
+    /**
+     * Brand name (shown when no logo is set)
+     */
+    name?: string | null;
+    /**
+     * Tagline shown under brand name
+     */
+    tagline?: string | null;
+  };
+  /**
+   * Navigation style settings
+   */
+  style?: {
+    /**
+     * Transform navigation links to uppercase
+     */
+    uppercase?: boolean | null;
+  };
+  /**
+   * Top bar with contact info (desktop only)
+   */
+  topBar?: {
+    show?: boolean | null;
+    useGlobalPhone?: boolean | null;
+    /**
+     * Phone number to display
+     */
+    phone?: string | null;
+    useGlobalHours?: boolean | null;
+    /**
+     * Working hours text
+     */
+    workingHours?: string | null;
+    /**
+     * Tagline shown on the right side
+     */
+    tagline?: string | null;
+    useGlobalSocialLinks?: boolean | null;
+    /**
+     * Social media links
+     */
+    socialLinks?:
+      | {
+          /**
+           * Social media platform
+           */
+          platform: 'facebook' | 'instagram' | 'twitter' | 'linkedin' | 'youtube' | 'tiktok';
+          /**
+           * Full URL to social profile
+           */
+          url: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Navigation menu items (drag to reorder)
+   */
+  items?:
+    | {
+        /**
+         * Type of navigation item
+         */
+        type: 'page' | 'dropdown' | 'special';
+        /**
+         * Page to link to (label auto-filled from page title)
+         */
+        page?: (number | null) | Page;
+        /**
+         * Override page title (optional)
+         */
+        pageLabel?: string | null;
+        /**
+         * Dropdown trigger label
+         */
+        dropdownLabel?: string | null;
+        /**
+         * How to populate dropdown items
+         */
+        dropdownSource?: ('children' | 'custom') | null;
+        /**
+         * Parent page - its children populate this dropdown
+         */
+        parentPage?: (number | null) | Page;
+        /**
+         * Show 'View All' link to parent page
+         */
+        showViewAll?: boolean | null;
+        /**
+         * Label for 'View All' link
+         */
+        viewAllLabel?: string | null;
+        /**
+         * Custom dropdown menu items
+         */
+        children?:
+          | {
+              /**
+               * Link to a page (label and href auto-filled)
+               */
+              page?: (number | null) | Page;
+              /**
+               * Override page title (optional)
+               */
+              customLabel?: string | null;
+              /**
+               * Description shown below label
+               */
+              description?: string | null;
+              /**
+               * Icon to display
+               */
+              icon?:
+                | (
+                    | 'home'
+                    | 'building'
+                    | 'sparkles'
+                    | 'brush'
+                    | 'droplets'
+                    | 'leaf'
+                    | 'shield'
+                    | 'clock'
+                    | 'star'
+                    | 'truck'
+                    | 'heart'
+                    | 'users'
+                    | 'award'
+                    | 'message-square'
+                  )
+                | null;
+              id?: string | null;
+            }[]
+          | null;
+        /**
+         * Link label
+         */
+        specialLabel?: string | null;
+        specialLink?: {
+          /**
+           * Link type
+           */
+          type: 'internal' | 'external' | 'anchor';
+          /**
+           * Select a page to link to
+           */
+          page?: (number | null) | Page;
+          /**
+           * Full URL (e.g., https://example.com)
+           */
+          url?: string | null;
+          /**
+           * Anchor (e.g., #contact or contact)
+           */
+          anchor?: string | null;
+          /**
+           * Open in new tab
+           */
+          newTab?: boolean | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Call-to-action button in navigation
+   */
+  cta?: {
+    show?: boolean | null;
+    label?: string | null;
+    link?: {
+      /**
+       * Link type
+       */
+      type: 'internal' | 'external' | 'anchor';
+      /**
+       * Select a page to link to
+       */
+      page?: (number | null) | Page;
+      /**
+       * Full URL (e.g., https://example.com)
+       */
+      url?: string | null;
+      /**
+       * Anchor (e.g., #contact or contact)
+       */
+      anchor?: string | null;
+      /**
+       * Open in new tab
+       */
+      newTab?: boolean | null;
+    };
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Configure the site footer
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: number;
+  /**
+   * Select the footer layout style
+   */
+  variant?: ('footer-1' | 'footer-2') | null;
+  /**
+   * Brand information
+   */
+  brand?: {
+    /**
+     * When enabled, uses site name and logo from Site Settings
+     */
+    useGlobalBrand?: boolean | null;
+    /**
+     * Footer logo (optional, shows icon if not set)
+     */
+    logo?: (number | null) | Media;
+    name?: string | null;
+    tagline?: string | null;
+    description?: string | null;
+  };
+  items: (
+    | {
+        title: string;
+        links?:
+          | {
+              /**
+               * Leave empty to use page title
+               */
+              label?: string | null;
+              link: {
+                /**
+                 * Link type
+                 */
+                type: 'internal' | 'external' | 'anchor';
+                /**
+                 * Select a page to link to
+                 */
+                page?: (number | null) | Page;
+                /**
+                 * Full URL (e.g., https://example.com)
+                 */
+                url?: string | null;
+                /**
+                 * Anchor (e.g., #contact or contact)
+                 */
+                anchor?: string | null;
+                /**
+                 * Open in new tab
+                 */
+                newTab?: boolean | null;
+              };
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'menu';
+      }
+    | {
+        /**
+         * Optional title
+         */
+        title?: string | null;
+        content: string;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'content';
+      }
+  )[];
+  useGlobalCopyright?: boolean | null;
+  /**
+   * Copyright text (year is added automatically)
+   */
+  copyright?: string | null;
+  /**
+   * Bottom bar links (Privacy, Terms, etc.)
+   */
+  bottomLinks?:
+    | {
+        /**
+         * Leave empty to use page title
+         */
+        label?: string | null;
+        link: {
+          /**
+           * Link type
+           */
+          type: 'internal' | 'external' | 'anchor';
+          /**
+           * Select a page to link to
+           */
+          page?: (number | null) | Page;
+          /**
+           * Full URL (e.g., https://example.com)
+           */
+          url?: string | null;
+          /**
+           * Anchor (e.g., #contact or contact)
+           */
+          anchor?: string | null;
+          /**
+           * Open in new tab
+           */
+          newTab?: boolean | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Translatable UI text for buttons, labels, and messages
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ui-strings".
+ */
+export interface UiString {
+  id: number;
+  common: {
+    readMore: string;
+    learnMore: string;
+    getStarted: string;
+    viewAll: string;
+    /**
+     * Used as prefix: 'Back to Services'
+     */
+    backTo: string;
+    loading: string;
+    error: string;
+    tryAgain: string;
+  };
+  navigation: {
+    home: string;
+    about: string;
+    services: string;
+    contact: string;
+    menu: string;
+    close: string;
+    language: string;
+    viewAllServices: string;
+  };
+  servicesPage: {
+    badge: string;
+    ourServices: string;
+    viewDetails: string;
+    features: string;
+    otherServices: string;
+    pricingBadge: string;
+    pricingHeading: string;
+    pricingSubheading: string;
+    mostPopular: string;
+    getStarted: string;
+    faqBadge: string;
+    faqHeading: string;
+    faqSubheading: string;
+  };
+  contactForm: {
+    getInTouch: string;
+    sendMessage: string;
+    sending: string;
+    messageSent: string;
+    messageError: string;
+    haveAQuestion: string;
+  };
+  contactPage: {
+    sendUsAMessage: string;
+    fillOutForm: string;
+    contactInformation: string;
+    reachOut: string;
+    commonQuestions: string;
+    faqSubtitle: string;
+    formNotConfigured: string;
+    infoNotConfigured: string;
+    phone: string;
+    email: string;
+    address: string;
+    businessHours: string;
+    followUs: string;
+  };
+  servicesSection: {
+    badge: string;
+    heading: string;
+    subheading: string;
+  };
+  aboutPage: {
+    ourTeam: string;
+    ourValues: string;
+    ourStory: string;
+  };
+  faq: {
+    badge: string;
+    title: string;
+    description: string;
+    stillHaveQuestions: string;
+    noFaqs: string;
+  };
+  cta: {
+    bookNow: string;
+    getQuote: string;
+    contactUs: string;
+  };
+  validation: {
+    required: string;
+    invalidEmail: string;
+    invalidPhone: string;
+  };
+  footerStrings: {
+    company: string;
+    services: string;
+    support: string;
+    getInTouch: string;
+    callUs: string;
+    emailUs: string;
+    visitUs: string;
+    bookACleaning: string;
+    /**
+     * Text before heart icon, e.g. 'Made with ❤️ by'
+     */
+    madeWithLove: string;
+    privacyPolicy: string;
+    termsOfService: string;
+  };
+  serviceDetail: {
+    breadcrumbHome: string;
+    breadcrumbServices: string;
+    professionalService: string;
+    startingAt: string;
+    bookThisService: string;
+    getFreeQuote: string;
+    ourServices: string;
+    needHelpChoosing: string;
+    whatsIncluded: string;
+    serviceFeatures: string;
+    readyToGetStarted: string;
+    /**
+     * Use {service} as placeholder for the service name
+     */
+    bookYourServiceToday: string;
+    getFreeEstimate: string;
+    callNow: string;
+    exploreMore: string;
+    relatedServices: string;
+    learnMore: string;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Configure which languages are available on the site. Changes require a site rebuild to take effect.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "languages".
+ */
+export interface Language {
+  id: number;
+  /**
+   * Languages shown in the language switcher. At least one language must be enabled.
+   */
+  languages: {
+    /**
+     * Select a language
+     */
+    code: 'en' | 'mk' | 'bg';
+    /**
+     * Label shown in the language switcher (e.g., '🇬🇧 English')
+     */
+    label: string;
+    /**
+     * Show this language in the language switcher
+     */
+    enabled?: boolean | null;
+    id?: string | null;
+  }[];
+  /**
+   * The default language when no preference is set. Requires site rebuild to take effect.
+   */
+  defaultLanguage: 'en' | 'mk' | 'bg';
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  siteName?: T;
+  logo?: T;
+  favicon?: T;
+  defaultNavigationStyle?: T;
+  contact?:
+    | T
+    | {
+        phone?: T;
+        email?: T;
+        address?: T;
+      };
+  businessHours?:
+    | T
+    | {
+        day?: T;
+        hours?: T;
+        id?: T;
+      };
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  theme?:
+    | T
+    | {
+        primaryColor?: T;
+        secondaryColor?: T;
+        accentColor?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation_select".
+ */
+export interface NavigationSelect<T extends boolean = true> {
+  brand?:
+    | T
+    | {
+        useGlobalBrand?: T;
+        logo?: T;
+        logoLink?:
+          | T
+          | {
+              type?: T;
+              page?: T;
+              url?: T;
+              anchor?: T;
+              newTab?: T;
+            };
+        name?: T;
+        tagline?: T;
+      };
+  style?:
+    | T
+    | {
+        uppercase?: T;
+      };
+  topBar?:
+    | T
+    | {
+        show?: T;
+        useGlobalPhone?: T;
+        phone?: T;
+        useGlobalHours?: T;
+        workingHours?: T;
+        tagline?: T;
+        useGlobalSocialLinks?: T;
+        socialLinks?:
+          | T
+          | {
+              platform?: T;
+              url?: T;
+              id?: T;
+            };
+      };
+  items?:
+    | T
+    | {
+        type?: T;
+        page?: T;
+        pageLabel?: T;
+        dropdownLabel?: T;
+        dropdownSource?: T;
+        parentPage?: T;
+        showViewAll?: T;
+        viewAllLabel?: T;
+        children?:
+          | T
+          | {
+              page?: T;
+              customLabel?: T;
+              description?: T;
+              icon?: T;
+              id?: T;
+            };
+        specialLabel?: T;
+        specialLink?:
+          | T
+          | {
+              type?: T;
+              page?: T;
+              url?: T;
+              anchor?: T;
+              newTab?: T;
+            };
+        id?: T;
+      };
+  cta?:
+    | T
+    | {
+        show?: T;
+        label?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              page?: T;
+              url?: T;
+              anchor?: T;
+              newTab?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  variant?: T;
+  brand?:
+    | T
+    | {
+        useGlobalBrand?: T;
+        logo?: T;
+        name?: T;
+        tagline?: T;
+        description?: T;
+      };
+  items?:
+    | T
+    | {
+        menu?:
+          | T
+          | {
+              title?: T;
+              links?:
+                | T
+                | {
+                    label?: T;
+                    link?:
+                      | T
+                      | {
+                          type?: T;
+                          page?: T;
+                          url?: T;
+                          anchor?: T;
+                          newTab?: T;
+                        };
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        content?:
+          | T
+          | {
+              title?: T;
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  useGlobalCopyright?: T;
+  copyright?: T;
+  bottomLinks?:
+    | T
+    | {
+        label?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              page?: T;
+              url?: T;
+              anchor?: T;
+              newTab?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ui-strings_select".
+ */
+export interface UiStringsSelect<T extends boolean = true> {
+  common?:
+    | T
+    | {
+        readMore?: T;
+        learnMore?: T;
+        getStarted?: T;
+        viewAll?: T;
+        backTo?: T;
+        loading?: T;
+        error?: T;
+        tryAgain?: T;
+      };
+  navigation?:
+    | T
+    | {
+        home?: T;
+        about?: T;
+        services?: T;
+        contact?: T;
+        menu?: T;
+        close?: T;
+        language?: T;
+        viewAllServices?: T;
+      };
+  servicesPage?:
+    | T
+    | {
+        badge?: T;
+        ourServices?: T;
+        viewDetails?: T;
+        features?: T;
+        otherServices?: T;
+        pricingBadge?: T;
+        pricingHeading?: T;
+        pricingSubheading?: T;
+        mostPopular?: T;
+        getStarted?: T;
+        faqBadge?: T;
+        faqHeading?: T;
+        faqSubheading?: T;
+      };
+  contactForm?:
+    | T
+    | {
+        getInTouch?: T;
+        sendMessage?: T;
+        sending?: T;
+        messageSent?: T;
+        messageError?: T;
+        haveAQuestion?: T;
+      };
+  contactPage?:
+    | T
+    | {
+        sendUsAMessage?: T;
+        fillOutForm?: T;
+        contactInformation?: T;
+        reachOut?: T;
+        commonQuestions?: T;
+        faqSubtitle?: T;
+        formNotConfigured?: T;
+        infoNotConfigured?: T;
+        phone?: T;
+        email?: T;
+        address?: T;
+        businessHours?: T;
+        followUs?: T;
+      };
+  servicesSection?:
+    | T
+    | {
+        badge?: T;
+        heading?: T;
+        subheading?: T;
+      };
+  aboutPage?:
+    | T
+    | {
+        ourTeam?: T;
+        ourValues?: T;
+        ourStory?: T;
+      };
+  faq?:
+    | T
+    | {
+        badge?: T;
+        title?: T;
+        description?: T;
+        stillHaveQuestions?: T;
+        noFaqs?: T;
+      };
+  cta?:
+    | T
+    | {
+        bookNow?: T;
+        getQuote?: T;
+        contactUs?: T;
+      };
+  validation?:
+    | T
+    | {
+        required?: T;
+        invalidEmail?: T;
+        invalidPhone?: T;
+      };
+  footerStrings?:
+    | T
+    | {
+        company?: T;
+        services?: T;
+        support?: T;
+        getInTouch?: T;
+        callUs?: T;
+        emailUs?: T;
+        visitUs?: T;
+        bookACleaning?: T;
+        madeWithLove?: T;
+        privacyPolicy?: T;
+        termsOfService?: T;
+      };
+  serviceDetail?:
+    | T
+    | {
+        breadcrumbHome?: T;
+        breadcrumbServices?: T;
+        professionalService?: T;
+        startingAt?: T;
+        bookThisService?: T;
+        getFreeQuote?: T;
+        ourServices?: T;
+        needHelpChoosing?: T;
+        whatsIncluded?: T;
+        serviceFeatures?: T;
+        readyToGetStarted?: T;
+        bookYourServiceToday?: T;
+        getFreeEstimate?: T;
+        callNow?: T;
+        exploreMore?: T;
+        relatedServices?: T;
+        learnMore?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "languages_select".
+ */
+export interface LanguagesSelect<T extends boolean = true> {
+  languages?:
+    | T
+    | {
+        code?: T;
+        label?: T;
+        enabled?: T;
+        id?: T;
+      };
+  defaultLanguage?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
