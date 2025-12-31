@@ -1,0 +1,137 @@
+/**
+ * Section & Footer stacking styles
+ *
+ * All overlap values are derived from radius values.
+ * Change the radius → overlap updates automatically.
+ */
+
+:root {
+  --section-radius: 3rem; /* 48px - controls section rounding & overlap */
+  --footer-radius: 3rem;    /* 48px - controls footer rounding & overlap */
+  --footer-radius-lg: 5rem; /* 80px - footer radius on large screens */
+}
+
+/* ===== SECTIONS ===== */
+
+section[data-rounded] {
+  position: relative;
+  margin-top: calc(var(--section-radius) * -1);
+  isolation: isolate;
+  /* Content is protected by Section's py-* spacing (min py-8=32px > overlap 24px) */
+}
+
+section[data-rounded="left"] {
+  border-top-left-radius: var(--section-radius);
+  border-bottom-left-radius: var(--section-radius);
+}
+
+section[data-rounded="right"] {
+  border-top-right-radius: var(--section-radius);
+  border-bottom-right-radius: var(--section-radius);
+}
+
+section[data-rounded="both"] {
+  border-radius: var(--section-radius);
+}
+
+/* Auto-alternating: odd sections round left, even sections round right */
+section[data-rounded="auto"]:nth-of-type(odd) {
+  border-top-left-radius: var(--section-radius);
+  border-bottom-left-radius: var(--section-radius);
+}
+section[data-rounded="auto"]:nth-of-type(even) {
+  border-top-right-radius: var(--section-radius);
+  border-bottom-right-radius: var(--section-radius);
+}
+
+/* Non-rounded sections before rounded sections need extra pb for overlap */
+section[data-spacing="sm"]:not([data-rounded]):has(+ section[data-rounded]) {
+  padding-bottom: calc(2rem + var(--section-radius));
+}
+section[data-spacing="md"]:not([data-rounded]):has(+ section[data-rounded]) {
+  padding-bottom: calc(3rem + var(--section-radius));
+}
+section[data-spacing="lg"]:not([data-rounded]):has(+ section[data-rounded]) {
+  padding-bottom: calc(4rem + var(--section-radius));
+}
+section[data-spacing="xl"]:not([data-rounded]):has(+ section[data-rounded]) {
+  padding-bottom: calc(5rem + var(--section-radius));
+}
+@media (min-width: 1024px) {
+  section[data-spacing="xl"]:not([data-rounded]):has(+ section[data-rounded]) {
+    padding-bottom: calc(6rem + var(--section-radius));
+  }
+}
+
+/* Sections before footer need padding to accommodate footer overlap */
+/* For rounded sections, replace section-radius with footer-radius in pb calc */
+section[data-spacing="sm"][data-rounded]:has(+ footer) {
+  padding-bottom: calc(2rem + var(--footer-radius));
+}
+section[data-spacing="md"][data-rounded]:has(+ footer) {
+  padding-bottom: calc(3rem + var(--footer-radius));
+}
+section[data-spacing="lg"][data-rounded]:has(+ footer) {
+  padding-bottom: calc(4rem + var(--footer-radius));
+}
+section[data-spacing="xl"][data-rounded]:has(+ footer) {
+  padding-bottom: calc(5rem + var(--footer-radius));
+}
+@media (min-width: 1024px) {
+  section[data-spacing="sm"][data-rounded]:has(+ footer) {
+    padding-bottom: calc(2rem + var(--footer-radius-lg));
+  }
+  section[data-spacing="md"][data-rounded]:has(+ footer) {
+    padding-bottom: calc(3rem + var(--footer-radius-lg));
+  }
+  section[data-spacing="lg"][data-rounded]:has(+ footer) {
+    padding-bottom: calc(4rem + var(--footer-radius-lg));
+  }
+  section[data-spacing="xl"][data-rounded]:has(+ footer) {
+    padding-bottom: calc(6rem + var(--footer-radius-lg));
+  }
+}
+
+/* For non-rounded sections before footer, calc base + footer-radius */
+section[data-spacing="sm"]:not([data-rounded]):has(+ footer) {
+  padding-bottom: calc(2rem + var(--footer-radius));
+}
+section[data-spacing="md"]:not([data-rounded]):has(+ footer) {
+  padding-bottom: calc(3rem + var(--footer-radius));
+}
+section[data-spacing="lg"]:not([data-rounded]):has(+ footer) {
+  padding-bottom: calc(4rem + var(--footer-radius));
+}
+section[data-spacing="xl"]:not([data-rounded]):has(+ footer) {
+  padding-bottom: calc(5rem + var(--footer-radius));
+}
+@media (min-width: 1024px) {
+  section[data-spacing="sm"]:not([data-rounded]):has(+ footer) {
+    padding-bottom: calc(2rem + var(--footer-radius-lg));
+  }
+  section[data-spacing="md"]:not([data-rounded]):has(+ footer) {
+    padding-bottom: calc(3rem + var(--footer-radius-lg));
+  }
+  section[data-spacing="lg"]:not([data-rounded]):has(+ footer) {
+    padding-bottom: calc(4rem + var(--footer-radius-lg));
+  }
+  section[data-spacing="xl"]:not([data-rounded]):has(+ footer) {
+    padding-bottom: calc(6rem + var(--footer-radius-lg));
+  }
+}
+
+/* ===== FOOTER ===== */
+
+footer[data-footer] {
+  margin-top: calc(var(--footer-radius) * -1);
+  padding-top: var(--footer-radius); /* Compensate for negative margin */
+  border-top-right-radius: var(--footer-radius);
+}
+
+@media (min-width: 1024px) {
+  footer[data-footer] {
+    margin-top: calc(var(--footer-radius-lg) * -1);
+    padding-top: var(--footer-radius-lg);
+    border-top-right-radius: var(--footer-radius-lg);
+  }
+}
