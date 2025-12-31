@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages, setRequestLocale } from "next-intl/server"
+import { Public_Sans } from "next/font/google"
 import { NavigationRenderer, Footer } from "@webko-labs/ui"
 import type { NavItemChild } from "@webko-labs/ui"
 import { routing } from "@/lib/i18n/routing"
@@ -17,6 +18,13 @@ import {
 import { i18nConfig } from "@/lib/i18n/config"
 
 import "./globals.css"
+
+const publicSans = Public_Sans({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-public-sans",
+  display: "swap",
+})
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
@@ -94,7 +102,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
         {/* Inject theme colors from CMS */}
         <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(theme) }} />
       </head>
-      <body className="antialiased">
+      <body className={`antialiased ${publicSans.variable}`} style={{ fontFamily: "var(--font-public-sans)" }}>
         <NextIntlClientProvider messages={messages}>
           <NavigationRenderer style={theme.defaultNavigationStyle} data={navigation} siteSettings={siteSettings} pageDropdownChildren={pageDropdownChildren} languages={languagesData.languages} uiStrings={uiStrings!.navigation} />
           {children}

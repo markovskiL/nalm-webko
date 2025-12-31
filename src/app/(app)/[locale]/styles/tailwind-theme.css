@@ -1,9 +1,9 @@
 /* Tailwind v4 theme configuration */
 
 @theme inline {
-  /* Fonts */
-  --font-sans: ui-sans-serif, system-ui, sans-serif;
-  --font-heading: ui-sans-serif, system-ui, sans-serif;
+  /* Fonts - Public Sans loaded via Next.js font optimization */
+  --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, monospace;
 
   /* Typography Scale - Mobile First */
